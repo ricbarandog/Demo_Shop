@@ -1,10 +1,13 @@
+
 import { GoogleGenAI } from "@google/genai";
 import { PRODUCTS } from '../constants';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// The key is provided by the environment, but we add a check to satisfy TS
+const apiKey = process.env.API_KEY || '';
 
 export const getDesignAdvice = async (userQuery: string): Promise<string> => {
   try {
+    const ai = new GoogleGenAI({ apiKey });
     const productCatalog = PRODUCTS.map(p => `${p.name} (${p.category}): $${p.price}/${p.unit} - ${p.description}`).join('\n');
     
     const prompt = `
@@ -21,7 +24,7 @@ export const getDesignAdvice = async (userQuery: string): Promise<string> => {
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: prompt,
     });
 
