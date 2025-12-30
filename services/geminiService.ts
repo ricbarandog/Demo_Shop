@@ -1,14 +1,15 @@
 
 import { GoogleGenAI } from "@google/genai";
-import { PRODUCTS } from '../constants';
-
-// The key is provided by the environment, but we add a check to satisfy TS
-const apiKey = process.env.API_KEY || '';
+// Fixed: Changed incorrect import 'PRODUCTS' to 'INITIAL_PRODUCTS'
+import { INITIAL_PRODUCTS } from '../constants';
 
 export const getDesignAdvice = async (userQuery: string): Promise<string> => {
   try {
-    const ai = new GoogleGenAI({ apiKey });
-    const productCatalog = PRODUCTS.map(p => `${p.name} (${p.category}): $${p.price}/${p.unit} - ${p.description}`).join('\n');
+    // Always use a named parameter for apiKey and use process.env.API_KEY directly.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
+    // Correctly reference INITIAL_PRODUCTS
+    const productCatalog = INITIAL_PRODUCTS.map(p => `${p.name} (${p.category}): $${p.price}/${p.unit} - ${p.description}`).join('\n');
     
     const prompt = `
       You are an expert interior design assistant for "Oak & Stone", a cabinet and flooring company.
@@ -23,11 +24,13 @@ export const getDesignAdvice = async (userQuery: string): Promise<string> => {
       If they ask about something we don't sell, politely redirect them to our cabinets or flooring.
     `;
 
+    // Use 'gemini-3-flash-preview' for basic text/Q&A tasks.
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
     });
 
+    // Access the .text property directly (not a method).
     return response.text || "I'm sorry, I couldn't generate a recommendation at this time.";
   } catch (error) {
     console.error("Gemini API Error:", error);
