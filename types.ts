@@ -4,6 +4,11 @@ export enum ProductCategory {
   FLOORING = 'Flooring',
 }
 
+export enum PaymentMethod {
+  CREDIT_CARD = 'Credit Card',
+  CASH = 'Cash on Delivery',
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -13,7 +18,7 @@ export interface Product {
   description: string;
   image: string;
   inStock: boolean;
-  stock: number; // Added for inventory management
+  stock: number;
 }
 
 export interface User {
@@ -32,7 +37,9 @@ export interface Order {
   items: CartItem[];
   total: number;
   timestamp: string;
-  status: 'Pending' | 'Delivered' | 'Cancelled';
+  status: 'Pending' | 'Processing' | 'Delivered' | 'Cancelled';
+  isSameDay?: boolean;
+  paymentMethod: PaymentMethod;
 }
 
 export interface CartItem extends Product {
@@ -44,11 +51,4 @@ export interface DeliverySlot {
   date: string;
   timeRange: string;
   available: boolean;
-}
-
-export enum PaymentMethod {
-  CREDIT_CARD = 'Credit Card',
-  DEBIT_CARD = 'Debit Card',
-  BANK_TRANSFER = 'Bank Transfer',
-  E_CHECK = 'e-Check',
 }

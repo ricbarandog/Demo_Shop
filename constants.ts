@@ -1,5 +1,5 @@
 
-import { Product, ProductCategory, DeliverySlot, User, Order } from './types';
+import { Product, ProductCategory, DeliverySlot, User, Order, PaymentMethod } from './types';
 
 export const INITIAL_PRODUCTS: Product[] = [
   {
@@ -71,8 +71,8 @@ export const INITIAL_PRODUCTS: Product[] = [
 ];
 
 export const MOCK_USERS: User[] = [
-  { id: 'u1', name: 'John Doe', email: 'john@example.com', phone: '555-0101', address: '123 Oak Lane', isAdmin: false },
-  { id: 'admin', name: 'Site Manager', email: 'admin@oakandstone.com', phone: '555-9999', address: 'Corporate HQ', isAdmin: true }
+  { id: 'u1', name: 'John Doe', email: 'john@example.com', phone: '555-0101', address: '123 Oak Lane, Design City, CA 90210', isAdmin: false },
+  { id: 'admin', name: 'Site Manager', email: 'admin@oakandstone.com', phone: '555-9999', address: 'Corporate HQ, Suite 400, NY 10001', isAdmin: true }
 ];
 
 export const MOCK_ORDERS: Order[] = [
@@ -83,19 +83,21 @@ export const MOCK_ORDERS: Order[] = [
     items: [],
     total: 1250.00,
     timestamp: new Date().toISOString(),
-    status: 'Pending'
+    status: 'Delivered',
+    paymentMethod: PaymentMethod.CASH,
+    isSameDay: true
   }
 ];
 
 const generateSlots = (): DeliverySlot[] => {
   const slots: DeliverySlot[] = [];
   const today = new Date();
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 0; i <= 5; i++) {
     const nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
     const dateStr = nextDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-    slots.push({ id: `slot-${i}-am`, date: dateStr, timeRange: '08:00 AM - 12:00 PM', available: Math.random() > 0.3 });
-    slots.push({ id: `slot-${i}-pm`, date: dateStr, timeRange: '01:00 PM - 05:00 PM', available: Math.random() > 0.2 });
+    slots.push({ id: `slot-${i}-am`, date: i === 0 ? 'Today' : dateStr, timeRange: '08:00 AM - 12:00 PM', available: Math.random() > 0.3 });
+    slots.push({ id: `slot-${i}-pm`, date: i === 0 ? 'Today' : dateStr, timeRange: '01:00 PM - 05:00 PM', available: Math.random() > 0.2 });
   }
   return slots;
 };
